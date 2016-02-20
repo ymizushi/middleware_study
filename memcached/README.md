@@ -8,13 +8,37 @@
 	* 排他制御
 * 参加者がmemcachedをHack出来る
 
-### 概要
+### memcachedの概要
 [memcachedを知り尽くす](http://gihyo.jp/dev/feature/01/memcached/0001) がわかりやすい
 
 ### リポジトリ
 現在は github で管理されている
 [github.com/memcached/memcached](https://github.com/memcached/memcached)
 
+### ビルド・動作手順
+* Mac OS X
+
+	```sh
+	brew instal automake # aclocalをインストールするために必要
+	git clone git@github.com:memcached/memcached.git
+	cd memcached
+	./autogen.sh # configure を生成
+	./configure # Makefile を生成
+	make # ビルド実行
+	./memcached
+	```
+	
+* Linux
+
+	```sh
+	brew instal automake # aclocalをインストールするために必要
+	git clone git@github.com:memcached/memcached.git
+	cd memcached
+	./autogen.sh # configure を生成
+	./configure # Makefile を生成
+	make # ビルド実行
+	./memcached
+	```
  
 ### ソースコード
 1. セッション管理
