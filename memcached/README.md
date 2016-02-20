@@ -45,7 +45,9 @@
 
 memcachedのセッション管理は、以下のところに大体記述されている
 * memcached.h/c
-* threads.h/c`c
+* threads.h/c
+
+```c
 /* event handling, network IO */
 static void event_handler(const int fd, const short which, void *arg);
 static void conn_close(conn *c);
