@@ -57,7 +57,7 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 	./memcached
 	```
  
-### ソースコード
+### 主要機能
 
 1. メモリ管理
 
@@ -91,7 +91,7 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 	
 	Version 1.4.25から 新しい[LRUエンジン](https://github.com/memcached/memcached/blob/master/doc/new_lru.txt)が搭載された.
 	
-	
+	Slabをリバランスする機能がある.
 
 
 2. セッション管理(※ 書きかけ)
@@ -138,3 +138,19 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 	memcachedのマルチスレッド処理はこのドキュメントが一番参考になる
 	https://github.com/memcached/memcached/blob/master/doc/threads.txt
 	
+
+###  Slab allocatorの実装
+slabs.h/slabs.c で主に実装されている.
+
+* 起動時に、[slabs_init](https://github.com/memcached/memcached/blob/master/slabs.c#L98) で初期化
+* [drive_machine](https://github.com/memcached/memcached/blob/master/memcached.c#L4049) で クライアントから来るイベントを処理
+	* [try_read_command](https://github.com/memcached/memcached/blob/master/memcached.c#L3681)でコマンドをパース
+		* [ここから](https://github.com/memcached/memcached/blob/master/memcached.c#L3765) ASCII形式のコマンドを解釈＆実行処理
+		* [process_command](https://github.com/memcached/memcached/blob/master/memcached.c#L3802) でコマンド実行
+		* process_[コマンド名]_command 各memcachedコマンドを実行
+		* process_update_command でupdate実行
+		* [ここで](https://github.com/memcached/memcached/blob/master/memcached.c#L3113) 実際にメモリセット(既にslab allocatorでメモリ確保されているので、この実装内でmallocとかはしない）
+		* items.c/do_item_alloc 
+		* slabs.c/do_slabs_alloc これが、データのSlab振り分けロジックの実体
+		* slbas.c/slabs_clsid でデータサイズからslab classの番号を取得
+		* 
