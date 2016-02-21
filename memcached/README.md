@@ -92,11 +92,12 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 
 	**LRU(Least Recently Used)** とはキャッシュアルゴリズムのうちの一つであり、Heap上に確保したメモリが一杯になった場合に、最近最も使われていないデータを最初に捨てることである.
 	
-	また、memcachedには ***Slab Reassign*** , ***Slab Automove*** という機能がある.
+	また、memcachedには **Slab Reassign** , **Slab Automove** という機能がある.
 	この機能の概要は [Memcache のSlab Reassign, Slab Automoveについて](http://ashigaru-com.blogspot.jp/2013/06/memcache-slab-reassign-slab-automove.html) 参照.
 	
 	Version 1.4.25から 新しい[LRUエンジン](https://github.com/memcached/memcached/blob/master/doc/new_lru.txt)が搭載された.
-	これは lru_maintainer_thread が LRUの最適化を行う. これによって、使われない
+	これは lru_maintainer_thread が LRUの最適化を行う.
+	slab classを、 **HOT** , **WARM** , **COLD** に分けて、使われていくものはHOT/WARMに、使われないものは動的にCOLDに振り分けられていき、メモリが足りなくなった時はCOLDに分類されるClassから揮発していく.
 
 
 2. セッション管理(※ 書きかけ)
