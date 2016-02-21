@@ -63,19 +63,14 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 
 	memcachedのメモリ管理で特筆すべき機能は以下の２つ.
 	* Slab allocator
+		* Growth Factor
 	* LRU(Least Recently Used)
-	* Growth Factor
 
 	Slab allocatorとは予めClassと呼ばれるChunkの固まりをHeap上にPageと呼ばれる名前で確保しておき（Chunk一つのサイズはクラス毎に決まる）、Cacheする対象のデータサイズに応じてClassを決定し、そのClassのChunkにデータをキャッシュする機能のことである.
 	まとまった解説としては [memcachedを知り尽くす 第2回　memcachedのメモリストレージを理解する](http://gihyo.jp/dev/feature/01/memcached/0002) が詳しい.
 	
-	LRU(Least Recently Used) とはキャッシュアルゴリズムのうちの一つであり、Heap上に確保したメモリが一杯になった場合に、最近最も使われていないデータを最初に捨てることである
-	
-	Version 1.4.25から 新しいLRUエンジンが搭載された
-	* https://github.com/memcached/memcached/blob/master/doc/new_lru.txt
-
 	Growth Factorとはslab classの1chunk辺りのデータサイズを決定する定数.
-	class n = class n-1 * Growth Factorになる.
+	漸化式っぽく表現すると、```class(n) = class(n-1) * GrowthFactor```になる.
 	手元の環境で Growth Factorを決定する -f オプションを指定してやると以下のようになる.
 	
 	```sh
@@ -91,6 +86,11 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 	slab class   3: chunk size       384 perslab    2730
 	....
 	```
+
+	LRU(Least Recently Used) とはキャッシュアルゴリズムのうちの一つであり、Heap上に確保したメモリが一杯になった場合に、最近最も使われていないデータを最初に捨てることである.
+	
+	Version 1.4.25から 新しい[LRUエンジン](https://github.com/memcached/memcached/blob/master/doc/new_lru.txt)が搭載された.
+	
 	
 
 
