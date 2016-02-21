@@ -83,12 +83,14 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 	slab class   1: chunk size        96 perslab   10922
 	slab class   2: chunk size       144 perslab    7281
 	slab class   3: chunk size       216 perslab    4854
+	....
 
 	$ ./memcached -f 2 -vv                                                                                                                                    
 	slab class   1: chunk size        96 perslab   10922
 	slab class   2: chunk size       192 perslab    5461
 	slab class   3: chunk size       384 perslab    2730
 	....
+	```
 	
 
 
