@@ -5,7 +5,7 @@
 * 参加者が以下の実装について把握している
 	* メモリ管理
 	* セッション管理
-	* 排他制御
+	* 排他制御・マルチスレッディング
 * 参加者がmemcachedをHack出来る
 
 ### memcachedの概要
@@ -66,10 +66,13 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 		* Growth Factor
 	* LRU(Least Recently Used)
 
-	Slab allocatorとは予めClassと呼ばれるChunkの固まりをHeap上にPageと呼ばれる名前で確保しておき（Chunk一つのサイズはクラス毎に決まる）、Cacheする対象のデータサイズに応じてClassを決定し、そのClassのChunkにデータをキャッシュする機能のことである.
+	**Slab allocator**とは予め **Class** と呼ばれる **Chunk** の固まりをヒープ上に単一又は複数の **Page** という概念確保しておく.
+	1ChunkのサイズはChunkの所属するClassによって決まる.
+	キャッシュする対象のデータサイズに応じてClassを決定し、そのClassのChunkにデータをセットする.
+	
 	まとまった解説としては [memcachedを知り尽くす 第2回　memcachedのメモリストレージを理解する](http://gihyo.jp/dev/feature/01/memcached/0002) が詳しい.
 	
-	Growth Factorとはslab classの1chunk辺りのデータサイズを決定する定数.
+	**Growth Factor**とは Class の1Chunk辺りのデータサイズを決定する定数.
 	漸化式っぽく表現すると、```class(n) = class(n-1) * GrowthFactor```になる.
 	手元の環境で Growth Factorを決定する -f オプションを指定してやると以下のようになる.
 	
@@ -87,11 +90,13 @@ memcachedはクライアントとの通信において、TCPまたはUDP上で�
 	....
 	```
 
-	LRU(Least Recently Used) とはキャッシュアルゴリズムのうちの一つであり、Heap上に確保したメモリが一杯になった場合に、最近最も使われていないデータを最初に捨てることである.
+	**LRU(Least Recently Used)** とはキャッシュアルゴリズムのうちの一つであり、Heap上に確保したメモリが一杯になった場合に、最近最も使われていないデータを最初に捨てることである.
+	
+	また、memcachedには ***Slab Reassign*** , ***Slab Automove*** という機能がある.
+	この機能の概要は [Memcache のSlab Reassign, Slab Automoveについて](http://ashigaru-com.blogspot.jp/2013/06/memcache-slab-reassign-slab-automove.html) 参照.
 	
 	Version 1.4.25から 新しい[LRUエンジン](https://github.com/memcached/memcached/blob/master/doc/new_lru.txt)が搭載された.
-	
-	Slabをリバランスする機能がある.
+	これは lru_maintainer_thread が LRUの最適化を行う. これによって、使われない
 
 
 2. セッション管理(※ 書きかけ)
